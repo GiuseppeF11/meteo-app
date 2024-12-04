@@ -1,0 +1,10 @@
+.chart-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .chart-scroll {
+    min-width: 800px;
+    height: 100%;
+  }
+  
