@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import TodayMeteo from "../components/TodayMeteo";
 import { useCity } from "../contexts/CityContext";
 import Loader from "../components/Loader";
+import { CiSearch } from "react-icons/ci";
 
 function Header() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -50,19 +51,19 @@ function Header() {
 
         {/* Input per la città */}
         <section className="text-center mb-5">
-          <form onSubmit={handleSubmit} className="inline-block">
+          <form onSubmit={handleSubmit} className="flex items-center justify-center">
             <input
               type="text"
               value={inputCity}
               onChange={handleInputCityChange}
               placeholder="Inserisci la città"
-              className="px-3 py-2 rounded"
+              className="px-3 py-2 rounded-md border border-gray-300 text-sm w-40 lg:w-60"
             />
             <button
               type="submit"
-              className="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
+              className="ml-2 px-3 py-2 bg-blue-500 text-white rounded-md flex items-center justify-center text-sm lg:text-base"
             >
-              Cerca
+              <CiSearch className="text-lg lg:text-xl" />
             </button>
           </form>
         </section>
@@ -93,19 +94,19 @@ function Header() {
             </h2>
           </section>
           <section>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="flex items-center">
               <input
                 type="text"
                 value={inputCity}
                 onChange={handleInputCityChange}
                 placeholder="Inserisci la città"
-                className="px-3 py-2 rounded"
+                className="px-3 py-2 rounded-md border border-gray-300 text-sm w-40 lg:w-60"
               />
               <button
                 type="submit"
-                className="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
+                className="ml-2 px-3 py-2 bg-blue-500 text-white rounded-md flex items-center justify-center text-sm lg:text-base"
               >
-                Cerca
+                <CiSearch className="text-lg lg:text-xl" />
               </button>
             </form>
           </section>
@@ -136,19 +137,19 @@ function Header() {
           </h2>
         </section>
         <section>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="flex items-center">
             <input
               type="text"
               value={inputCity}
               onChange={handleInputCityChange}
               placeholder="Inserisci la città"
-              className="px-3 py-2 rounded"
+              className="px-3 py-2 rounded-md border border-gray-300 text-sm w-40 lg:w-60"
             />
             <button
               type="submit"
-              className="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
+              className="ml-2 px-3 py-2 bg-blue-500 text-white rounded-md flex items-center justify-center text-sm lg:text-base"
             >
-              Cerca
+              <CiSearch className="text-lg lg:text-xl" />
             </button>
           </form>
         </section>
