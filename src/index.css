@@ -2,7 +2,195 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Design tokens: palette base (default: sunny/day) ─── */
 :root {
-    background: rgb(255,51,49);
-    background: linear-gradient(90deg, rgba(255,51,49,1) 0%, rgba(255,144,77,1) 50%);
+  --bg-1: #fef6e4;
+  --bg-2: #fbe4b0;
+  --ink: #3a2d18;
+  --ink-2: #7a6a52;
+  --accent: #d97706;
+  --accent-soft: rgba(217,119,6,.18);
+  --card: rgba(255,255,255,.62);
+  --card-stroke: rgba(60,40,10,.10);
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-ui: 'Geist', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* ─── Sunny ─── */
+[data-palette="sunny-dawn"] {
+  --bg-1: #ffd580; --bg-2: #ffb347;
+  --ink: #2e1800; --ink-2: #7a4a10;
+  --accent: #e06010; --accent-soft: rgba(224,96,16,.20);
+  --card: rgba(255,230,180,.65); --card-stroke: rgba(120,60,0,.12);
+}
+[data-palette="sunny-day"] {
+  --bg-1: #fff0b3; --bg-2: #ffe066;
+  --ink: #2e2000; --ink-2: #7a6020;
+  --accent: #c87c00; --accent-soft: rgba(200,124,0,.18);
+  --card: rgba(255,255,220,.65); --card-stroke: rgba(80,60,0,.12);
+}
+[data-palette="sunny-dusk"] {
+  --bg-1: #ff9a5c; --bg-2: #e8502a;
+  --ink: #1e0800; --ink-2: #6a2a10;
+  --accent: #c03010; --accent-soft: rgba(192,48,16,.22);
+  --card: rgba(255,180,120,.55); --card-stroke: rgba(100,30,0,.14);
+}
+[data-palette="sunny-night"] {
+  --bg-1: #0a0f28; --bg-2: #141e48;
+  --ink: #f0f3ff; --ink-2: #9ba8d0;
+  --accent: #ffd76b; --accent-soft: rgba(255,215,107,.18);
+  --card: rgba(255,255,255,.08); --card-stroke: rgba(255,255,255,.12);
+}
+
+/* ─── Partly cloudy ─── */
+[data-palette="p-cloudy-dawn"] {
+  --bg-1: #f0d090; --bg-2: #d8a860;
+  --ink: #2a1800; --ink-2: #705030;
+  --accent: #b87020; --accent-soft: rgba(184,112,32,.18);
+  --card: rgba(245,225,185,.62); --card-stroke: rgba(90,50,5,.12);
+}
+[data-palette="p-cloudy-day"] {
+  --bg-1: #e8dfc8; --bg-2: #cfc5a0;
+  --ink: #201c10; --ink-2: #605840;
+  --accent: #9a7c30; --accent-soft: rgba(154,124,48,.18);
+  --card: rgba(255,252,238,.62); --card-stroke: rgba(60,45,10,.12);
+}
+[data-palette="p-cloudy-dusk"] {
+  --bg-1: #c89060; --bg-2: #a06838;
+  --ink: #1e0e00; --ink-2: #644028;
+  --accent: #904818; --accent-soft: rgba(144,72,24,.22);
+  --card: rgba(215,175,130,.55); --card-stroke: rgba(80,30,0,.14);
+}
+[data-palette="p-cloudy-night"] {
+  --bg-1: #0e1430; --bg-2: #1a2248;
+  --ink: #e8ecff; --ink-2: #8890b8;
+  --accent: #c8a840; --accent-soft: rgba(200,168,64,.18);
+  --card: rgba(255,255,255,.07); --card-stroke: rgba(255,255,255,.11);
+}
+
+/* ─── Cloudy ─── */
+[data-palette="cloudy-dawn"] {
+  --bg-1: #c8c4bc; --bg-2: #a8a49c;
+  --ink: #181614; --ink-2: #585450;
+  --accent: #706858; --accent-soft: rgba(112,104,88,.18);
+  --card: rgba(225,222,218,.62); --card-stroke: rgba(40,36,30,.10);
+}
+[data-palette="cloudy-day"] {
+  --bg-1: #d5d5d5; --bg-2: #b5b8ba;
+  --ink: #141414; --ink-2: #545454;
+  --accent: #4a6878; --accent-soft: rgba(74,104,120,.18);
+  --card: rgba(255,255,255,.58); --card-stroke: rgba(30,30,30,.10);
+}
+[data-palette="cloudy-dusk"] {
+  --bg-1: #a8a0a0; --bg-2: #887880;
+  --ink: #141010; --ink-2: #504448;
+  --accent: #606070; --accent-soft: rgba(96,96,112,.20);
+  --card: rgba(195,188,190,.55); --card-stroke: rgba(50,38,42,.12);
+}
+[data-palette="cloudy-night"] {
+  --bg-1: #0c1018; --bg-2: #181e28;
+  --ink: #d8dce8; --ink-2: #78808e;
+  --accent: #8090a8; --accent-soft: rgba(128,144,168,.18);
+  --card: rgba(255,255,255,.06); --card-stroke: rgba(255,255,255,.10);
+}
+
+/* ─── Rainy ─── */
+[data-palette="rainy-dawn"] {
+  --bg-1: #8ab0cc; --bg-2: #6090b0;
+  --ink: #081420; --ink-2: #385468;
+  --accent: #2868a0; --accent-soft: rgba(40,104,160,.22);
+  --card: rgba(175,205,225,.60); --card-stroke: rgba(15,45,80,.12);
+}
+[data-palette="rainy-day"] {
+  --bg-1: #a0bdd4; --bg-2: #7098b8;
+  --ink: #08141e; --ink-2: #3a5265;
+  --accent: #1e5882; --accent-soft: rgba(30,88,130,.22);
+  --card: rgba(190,215,235,.60); --card-stroke: rgba(15,48,82,.12);
+}
+[data-palette="rainy-dusk"] {
+  --bg-1: #607888; --bg-2: #405868;
+  --ink: #080e16; --ink-2: #304050;
+  --accent: #284e68; --accent-soft: rgba(40,78,104,.24);
+  --card: rgba(120,148,168,.55); --card-stroke: rgba(8,24,44,.14);
+}
+[data-palette="rainy-night"] {
+  --bg-1: #060c18; --bg-2: #0c1420;
+  --ink: #b8cce0; --ink-2: #5870a0;
+  --accent: #4080b8; --accent-soft: rgba(64,128,184,.22);
+  --card: rgba(255,255,255,.06); --card-stroke: rgba(80,130,190,.14);
+}
+
+/* ─── Stormy ─── */
+[data-palette="stormy-dawn"] {
+  --bg-1: #3c3030; --bg-2: #261e1e;
+  --ink: #f0e8e0; --ink-2: #a89888;
+  --accent: #d4a020; --accent-soft: rgba(212,160,32,.22);
+  --card: rgba(90,75,70,.52); --card-stroke: rgba(240,220,160,.14);
+}
+[data-palette="stormy-day"] {
+  --bg-1: #383030; --bg-2: #242020;
+  --ink: #f0e8e0; --ink-2: #a09088;
+  --accent: #e8b800; --accent-soft: rgba(232,184,0,.22);
+  --card: rgba(80,70,68,.52); --card-stroke: rgba(240,220,100,.14);
+}
+[data-palette="stormy-dusk"] {
+  --bg-1: #2c1e28; --bg-2: #180e18;
+  --ink: #e8d8e0; --ink-2: #907888;
+  --accent: #d48800; --accent-soft: rgba(212,136,0,.24);
+  --card: rgba(72,52,66,.52); --card-stroke: rgba(220,185,100,.14);
+}
+[data-palette="stormy-night"] {
+  --bg-1: #060608; --bg-2: #0c0c14;
+  --ink: #e0d8f0; --ink-2: #706888;
+  --accent: #f0cc20; --accent-soft: rgba(240,204,32,.22);
+  --card: rgba(255,255,255,.05); --card-stroke: rgba(240,210,60,.14);
+}
+
+/* ─── Base reset ─── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: var(--font-ui);
+  color: var(--ink);
+  background: var(--bg-1);
+  transition: background 0.9s ease, color 0.9s ease;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-soft);
+  border-radius: 999px;
+  transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-soft) transparent;
 }

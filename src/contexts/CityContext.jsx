@@ -1,37 +1,32 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
+import { useLang } from "./LangContext";
 
 const CityContext = createContext();
 
 export const CityProvider = ({ children }) => {
   const [city, setCity] = useState("Catania");
-  const [weatherData, setWeatherData] = useState(null); 
-  const [loading, setLoading] = useState(false); 
+  const [weatherData, setWeatherData] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedHour, setSelectedHour] = useState(null); 
+  const [selectedHour, setSelectedHour] = useState(null);
+  const { lang } = useLang();
 
   const API_KEY = "4ZHN8M7GAK9M3PNAFDJFBSYY9";
 
-  const fetchWeatherData = async (city) => {
+  const fetchWeatherData = async (city, language) => {
     setLoading(true);
     setError(null);
-
     try {
-      console.log("Fetching weather data for city:", city);
-
       const response = await axios.get(
-        `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&key=${API_KEY}`
+        `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(city)}?unitGroup=metric&lang=${language}&key=${API_KEY}`
       );
-
-      console.log("API Response:", response.data);
-
       if (response.data) {
-        setWeatherData(response.data); 
+        setWeatherData(response.data);
       } else {
-        throw new Error("Nessun dato disponibile per la città selezionata.");
+        throw new Error("Nessun dato disponibile.");
       }
     } catch (err) {
-      console.error("Errore nella chiamata API:", err);
       setError(err.message || "Errore nella chiamata API");
     } finally {
       setLoading(false);
@@ -39,15 +34,10 @@ export const CityProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (city) {
-      fetchWeatherData(city);
-    }
-  }, [city]);
+    if (city) fetchWeatherData(city, lang);
+  }, [city, lang]);
 
-  const setHour = (hour) => {
-    setSelectedHour(hour);
-    console.log('ORA: ', hour)
-  };
+  const setHour = (hour) => setSelectedHour(hour);
 
   return (
     <CityContext.Provider value={{ city, setCity, weatherData, loading, error, selectedHour, setHour }}>
