@@ -171,11 +171,15 @@ export function SnowIcon({ size = defaults.size, strokeWidth = defaults.strokeWi
 
 export function getWeatherIcon(conditions = "", isDay = true, props = {}) {
   const c = conditions.toLowerCase();
-  if (c.includes("thunder") || c.includes("storm")) return <Storm {...props} />;
-  if (c.includes("snow") || c.includes("sleet") || c.includes("ice")) return <SnowIcon {...props} />;
-  if (c.includes("rain") || c.includes("drizzle") || c.includes("shower")) return <Rain {...props} />;
-  if (c.includes("overcast")) return <Cloud {...props} />;
-  if (c.includes("cloud") || c.includes("partially")) return isDay ? <PartlyCloudy {...props} /> : <Cloud {...props} />;
-  if (c.includes("fog") || c.includes("mist")) return <Cloud {...props} />;
+  if (c.includes("thunder") || c.includes("storm") || c.includes("temporale") || c.includes("fulmine"))
+    return <Storm {...props} />;
+  if (c.includes("snow") || c.includes("sleet") || c.includes("ice") || c.includes("neve") || c.includes("grandine") || c.includes("nevischio"))
+    return <SnowIcon {...props} />;
+  if (c.includes("rain") || c.includes("drizzle") || c.includes("shower") || c.includes("pioggia") || c.includes("pioviggine") || c.includes("rovescio"))
+    return <Rain {...props} />;
+  if (c.includes("overcast") || c.includes("coperto") || c.includes("fog") || c.includes("mist") || c.includes("nebbia") || c.includes("foschia"))
+    return <Cloud {...props} />;
+  if (c.includes("cloud") || c.includes("partially") || c.includes("nuvoloso") || c.includes("parzialmente"))
+    return isDay ? <PartlyCloudy {...props} /> : <Cloud {...props} />;
   return isDay ? <Sun {...props} /> : <Moon {...props} />;
 }

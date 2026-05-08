@@ -7,6 +7,7 @@ export const translations = {
     searchNotFound: "Città non trovata. Prova con un altro nome.",
 
     next24h: "Le prossime 24 ore",
+    hourlyTitle: "Condizioni ora per ora",
     sunArcTitle: "Alba & Tramonto",
 
     metricWind: "Vento",
@@ -31,6 +32,7 @@ export const translations = {
     searchNotFound: "City not found. Try a different name.",
 
     next24h: "Next 24 hours",
+    hourlyTitle: "Hourly conditions",
     sunArcTitle: "Sunrise & Sunset",
 
     metricWind: "Wind",

@@ -111,7 +111,7 @@ export default function DayModal({ day, onClose }) {
   });
 
   // Hourly breakdown: every 3h
-  const hourlySlots = day.hours?.filter((_, i) => i % 3 === 0) ?? [];
+  const hourlySlots = day.hours ?? [];
 
   return (
     <div
@@ -194,31 +194,39 @@ export default function DayModal({ day, onClose }) {
         {hourlySlots.length > 0 && (
           <div>
             <p className="label-mono" style={{ marginBottom: 10 }}>{t("modalHourly")}</p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))", gap: 8 }}>
+            <div style={{
+              display: "flex", gap: 8,
+              overflowX: "auto", scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
+              scrollbarWidth: "none", msOverflowStyle: "none",
+              paddingBottom: 2,
+            }}>
               {hourlySlots.map((h, i) => {
                 const hIcon = getWeatherIcon(h.conditions || "", parseInt(h.datetime) >= 6 && parseInt(h.datetime) < 20, {
-                  size: 22, color: "var(--accent)", strokeWidth: 1.6,
+                  size: 20, color: "var(--accent)", strokeWidth: 1.6,
                 });
                 return (
-                  <div key={i} className="glass" style={{ padding: "10px 8px", display: "flex",
-                    flexDirection: "column", alignItems: "center", gap: 5 }}>
-                    <span style={{ fontFamily: "var(--font-mono)", fontSize: 10,
+                  <div key={i} className="glass" style={{
+                    flex: "0 0 68px", scrollSnapAlign: "start",
+                    padding: "10px 6px", display: "flex",
+                    flexDirection: "column", alignItems: "center", gap: 5,
+                    borderRadius: 14,
+                  }}>
+                    <span style={{ fontFamily: "var(--font-mono)", fontSize: 9,
                       color: "var(--ink-2)", letterSpacing: "0.06em" }}>
                       {h.datetime.slice(0, 5)}
                     </span>
                     {hIcon}
-                    <span style={{ fontFamily: "var(--font-display)", fontSize: 16,
+                    <span style={{ fontFamily: "var(--font-display)", fontSize: 15,
                       fontWeight: 600, color: "var(--ink)", letterSpacing: "-0.02em" }}>
                       {Math.round(h.temp)}°
                     </span>
-                    {(h.precipprob ?? 0) > 0 && (
-                      <span style={{ fontFamily: "var(--font-mono)", fontSize: 9,
-                        color: "var(--ink-2)", letterSpacing: "0.04em", display: "flex",
-                        alignItems: "center", gap: 2 }}>
-                        <Drop size={10} color="var(--accent)" strokeWidth={2} />
-                        {h.precipprob}%
-                      </span>
-                    )}
+                    <span style={{ fontFamily: "var(--font-mono)", fontSize: 8,
+                      color: "var(--ink-2)", letterSpacing: "0.04em", display: "flex",
+                      alignItems: "center", gap: 2 }}>
+                      <Drop size={9} color="var(--accent)" strokeWidth={2} />
+                      {h.precipprob ?? 0}%
+                    </span>
                   </div>
                 );
               })}

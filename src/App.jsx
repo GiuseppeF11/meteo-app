@@ -6,6 +6,7 @@ import AtmosphericBackground from "./components/AtmosphericBackground";
 import SearchBar from "./components/SearchBar";
 import HeroSection from "./components/HeroSection";
 import Chart from "./components/Chart";
+import HourlyStrip from "./components/HourlyStrip";
 import MetricsGrid from "./components/MetricsGrid";
 import SunArc from "./components/SunArc";
 import ForecastGrid from "./components/ForecastGrid";
@@ -36,7 +37,14 @@ function AppContent() {
             <SunArc />
           </div>
         </div>
+        {/* Hourly conditions — always visible */}
         <div className="glass chart-section fade-up-4">
+          <p className="chart-section-title">{t("hourlyTitle")}</p>
+          <HourlyStrip />
+        </div>
+
+        {/* Temperature chart — desktop only */}
+        <div className="glass chart-section fade-up-4 chart-desktop-only">
           <p className="chart-section-title">{t("next24h")}</p>
           <Chart />
         </div>

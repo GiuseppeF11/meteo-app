@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useCity } from "../contexts/CityContext";
+import { useLang } from "../contexts/LangContext";
 import { getWeatherIcon, Drop } from "./WeatherIcons";
 import DayModal from "./DayModal";
 
@@ -16,6 +17,7 @@ function RangeBar({ min, max, absMin, absMax }) {
 
 export default function ForecastGrid() {
   const { weatherData } = useCity();
+  const { t } = useLang();
   const [selectedDay, setSelectedDay] = useState(null);
 
   if (!weatherData) return null;
@@ -30,7 +32,7 @@ export default function ForecastGrid() {
     <>
       <div className="forecast-grid fade-up-5">
         {days.map((day, i) => {
-          const label = new Date(day.datetime).toLocaleDateString("it-IT", { weekday: "short" });
+          const label = new Date(day.datetime).toLocaleDateString(t("dateLocale"), { weekday: "short" });
           const min = Math.round(day.tempmin);
           const max = Math.round(day.tempmax);
           const icon = getWeatherIcon(day.conditions || "", true, {

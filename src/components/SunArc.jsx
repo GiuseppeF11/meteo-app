@@ -9,16 +9,22 @@ function timeStrToMinutes(str) {
   return h * 60 + (m || 0);
 }
 
+// Computes the position of the sun on the quadratic bezier arc using De Casteljau split.
+// The bezier: M(cx-rx, baseY) Q(cx, baseY-ry) (cx+rx, baseY)
+// At parameter p: x = cx + rx*(2p-1), y = baseY - 2*ry*p*(1-p)
+// Control point of the split sub-curve: cp1 = lerp(P0, P1, p)
 function posOnArc(t, tRise, tSet, W = 320, H = 90) {
   const progress = Math.max(0, Math.min(1, (t - tRise) / (tSet - tRise)));
-  const angle = Math.PI * progress;
   const cx = W / 2;
   const baseY = H - 14;
   const rx = (W - 40) / 2;
   const ry = H - 20;
+  const p = progress;
   return {
-    x: cx - rx * Math.cos(angle),
-    y: baseY - ry * Math.sin(angle),
+    x: cx + rx * (2 * p - 1),
+    y: baseY - 2 * ry * p * (1 - p),
+    cp1x: cx - rx + p * rx,
+    cp1y: baseY - p * ry,
     progress,
   };
 }
@@ -33,7 +39,9 @@ export default function SunArc() {
   const sunset  = day?.sunset  || "20:00:00";
 
   const now = new Date();
-  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const tzOffset = weatherData?.tzoffset ?? 0;
+  const cityDate = new Date(now.getTime() + now.getTimezoneOffset() * 60000 + tzOffset * 3600000);
+  const nowMin = cityDate.getHours() * 60 + cityDate.getMinutes();
   const riseMin = timeStrToMinutes(sunrise);
   const setMin  = timeStrToMinutes(sunset);
 
@@ -65,7 +73,7 @@ export default function SunArc() {
         {sun.progress > 0 && sun.progress < 1 && (
           <>
             <path
-              d={`M ${cx - rx} ${baseY} Q ${cx} ${baseY - ry} ${sun.x} ${sun.y}`}
+              d={`M ${cx - rx} ${baseY} Q ${sun.cp1x} ${sun.cp1y} ${sun.x} ${sun.y}`}
               fill="none"
               stroke="var(--accent)"
               strokeWidth="2"

@@ -102,90 +102,125 @@ export default function SearchBar() {
   };
 
   return (
-    <div ref={containerRef} style={{ position: "relative", marginBottom: 28, display: "flex", alignItems: "flex-start", gap: 10 }}>
-      <form onSubmit={handleSubmit} className="glass-pill search-bar fade-up">
-        <SearchIcon size={18} color="var(--ink-2)" strokeWidth={1.8} />
-        <input
-          type="text" value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onFocus={() => suggestions.length > 0 && setOpen(true)}
-          placeholder={t("searchPlaceholder")}
-          autoComplete="off"
-          aria-label={t("searchPlaceholder")}
-          aria-autocomplete="list"
-          aria-expanded={open}
-        />
-        {input && (
-          <button type="button"
-            onClick={() => { setInput(""); setSuggestions([]); setOpen(false); setError(""); }}
-            style={{ background: "transparent", border: "none", cursor: "pointer",
-              color: "var(--ink-2)", padding: 0, lineHeight: 1, fontSize: 16 }}
-            aria-label={t("searchClear")}>
-            ×
+    <div style={{ marginBottom: 28, display: "flex", alignItems: "flex-start", gap: 8 }}>
+      {/* Search form + dropdown scoped together */}
+      <div ref={containerRef} style={{ position: "relative" }}>
+        <form onSubmit={handleSubmit} className="glass-pill search-bar fade-up">
+          <SearchIcon size={18} color="var(--ink-2)" strokeWidth={1.8} />
+          <input
+            type="text" value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onFocus={() => suggestions.length > 0 && setOpen(true)}
+            placeholder={t("searchPlaceholder")}
+            autoComplete="off"
+            aria-label={t("searchPlaceholder")}
+            aria-autocomplete="list"
+            aria-expanded={open}
+          />
+          {input && (
+            <button type="button"
+              onClick={() => { setInput(""); setSuggestions([]); setOpen(false); setError(""); }}
+              style={{ background: "transparent", border: "none", cursor: "pointer",
+                color: "var(--ink-2)", padding: 0, lineHeight: 1, fontSize: 16 }}
+              aria-label={t("searchClear")}>
+              ×
+            </button>
+          )}
+          <button type="submit" aria-label={t("searchGo")}>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 10,
+              letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-2)" }}>
+              {t("searchGo")}
+            </span>
           </button>
+        </form>
+
+        {error && (
+          <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#e05050",
+            margin: "4px 16px 0", letterSpacing: "0.04em" }}>
+            {error}
+          </p>
         )}
-        <button type="submit" aria-label={t("searchGo")}>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: 10,
-            letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-2)" }}>
-            {t("searchGo")}
-          </span>
-        </button>
-      </form>
 
-      <button
-        type="button"
-        onClick={() => setLang(lang === "it" ? "en" : "it")}
-        className="glass-pill"
-        style={{
-          padding: "0 16px", height: 44, whiteSpace: "nowrap", flexShrink: 0,
-          fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.12em",
-          textTransform: "uppercase", color: "var(--ink)", cursor: "pointer",
-          border: "none", background: "var(--card)",
-        }}
+        {open && suggestions.length > 0 && (
+          <ul role="listbox" style={{
+            position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0,
+            listStyle: "none", margin: 0, padding: "4px 0",
+            background: "var(--card)", border: "1px solid var(--card-stroke)",
+            backdropFilter: "blur(14px) saturate(140%)",
+            WebkitBackdropFilter: "blur(14px) saturate(140%)",
+            borderRadius: 12, zIndex: 100, boxShadow: "0 8px 24px rgba(0,0,0,.10)",
+          }}>
+            {suggestions.map((s, i) => (
+              <li key={i} role="option" aria-selected={i === activeIdx}
+                onMouseDown={() => selectCity(s.cityName)}
+                onMouseEnter={() => setActiveIdx(i)}
+                style={{
+                  padding: "7px 14px", cursor: "pointer",
+                  fontFamily: "var(--font-ui)", fontSize: 13,
+                  color: i === activeIdx ? "var(--accent)" : "var(--ink)",
+                  background: i === activeIdx ? "var(--accent-soft)" : "transparent",
+                  transition: "background 0.15s",
+                  display: "flex", flexDirection: "column", gap: 1,
+                }}>
+                <span style={{ fontWeight: 600 }}>{s.cityName}</span>
+                <span style={{ fontSize: 10, color: "var(--ink-2)",
+                  fontFamily: "var(--font-mono)", letterSpacing: "0.04em" }}>
+                  {s.label.split(", ").slice(1).join(", ")}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* Language toggle — sliding pill */}
+      <div
+        role="group"
         aria-label="Switch language"
+        style={{
+          position: "relative", display: "flex", alignItems: "center",
+          flexShrink: 0, borderRadius: 20,
+          border: "1px solid var(--card-stroke)",
+          background: "var(--card)",
+          backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+          padding: 3, gap: 0,
+        }}
       >
-        {t("langToggle")}
-      </button>
-
-      {error && (
-        <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#e05050",
-          margin: "4px 16px 0", letterSpacing: "0.04em", position: "absolute",
-          top: "100%", left: 0 }}>
-          {error}
-        </p>
-      )}
-
-      {open && suggestions.length > 0 && (
-        <ul role="listbox" style={{
-          position: "absolute", top: "calc(100% + 6px)", left: 0, right: 0,
-          listStyle: "none", margin: 0, padding: "6px 0",
-          background: "var(--card)", border: "1px solid var(--card-stroke)",
-          backdropFilter: "blur(14px) saturate(140%)",
-          WebkitBackdropFilter: "blur(14px) saturate(140%)",
-          borderRadius: 14, zIndex: 100, boxShadow: "0 8px 32px rgba(0,0,0,.12)",
-        }}>
-          {suggestions.map((s, i) => (
-            <li key={i} role="option" aria-selected={i === activeIdx}
-              onMouseDown={() => selectCity(s.cityName)}
-              onMouseEnter={() => setActiveIdx(i)}
-              style={{
-                padding: "9px 16px", cursor: "pointer",
-                fontFamily: "var(--font-ui)", fontSize: 13,
-                color: i === activeIdx ? "var(--accent)" : "var(--ink)",
-                background: i === activeIdx ? "var(--accent-soft)" : "transparent",
-                transition: "background 0.15s",
-                display: "flex", flexDirection: "column", gap: 1,
-              }}>
-              <span style={{ fontWeight: 600 }}>{s.cityName}</span>
-              <span style={{ fontSize: 11, color: "var(--ink-2)",
-                fontFamily: "var(--font-mono)", letterSpacing: "0.04em" }}>
-                {s.label.split(", ").slice(1).join(", ")}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
+        {/* Sliding thumb */}
+        <span style={{
+          position: "absolute",
+          top: 3, left: 3,
+          width: "calc(50% - 3px)",
+          bottom: 3,
+          borderRadius: 14,
+          background: "var(--accent)",
+          opacity: 0.9,
+          transform: lang === "en" ? "translateX(100%)" : "translateX(0)",
+          transition: "transform 0.22s cubic-bezier(.4,0,.2,1)",
+          pointerEvents: "none",
+        }} />
+        {["it", "en"].map((l) => (
+          <button
+            key={l}
+            type="button"
+            onClick={() => setLang(l)}
+            style={{
+              position: "relative", zIndex: 1,
+              width: 32, height: 24,
+              border: "none", background: "transparent", cursor: "pointer",
+              fontFamily: "var(--font-mono)", fontSize: 10,
+              letterSpacing: "0.1em", textTransform: "uppercase",
+              color: lang === l ? "var(--bg-1)" : "var(--ink-2)",
+              fontWeight: lang === l ? 700 : 400,
+              transition: "color 0.22s",
+              borderRadius: 14,
+            }}
+          >
+            {l.toUpperCase()}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

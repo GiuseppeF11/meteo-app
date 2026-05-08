@@ -35,7 +35,7 @@ export const CityProvider = ({ children }) => {
 
   useEffect(() => {
     if (city) fetchWeatherData(city, lang);
-  }, [city, lang]);
+  }, [city]); // lang escluso: il toggle lingua non rifà il fetch
 
   const setHour = (hour) => setSelectedHour(hour);
 

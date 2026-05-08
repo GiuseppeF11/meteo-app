@@ -77,27 +77,45 @@ export default function Chart() {
         <path d={curvePath} fill="none" stroke="var(--accent)"
           strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
 
-        {/* Peak marker */}
+        {/* Peak marker — always visible */}
         {peakIdx >= 0 && (
           <g>
             <circle cx={points[peakIdx].x} cy={points[peakIdx].y} r="9"
               fill="var(--accent)" fillOpacity="0.18" />
             <circle cx={points[peakIdx].x} cy={points[peakIdx].y} r="4.5"
               fill="var(--accent)" />
+            <text
+              x={points[peakIdx].x}
+              y={points[peakIdx].y - 12}
+              textAnchor="middle"
+              fill="var(--accent)"
+              fontSize="13"
+              fontFamily="var(--font-mono)"
+              fontWeight="700"
+              letterSpacing="0.02em"
+            >
+              {points[peakIdx].t}°
+            </text>
+            <text
+              x={points[peakIdx].x}
+              y={H - 6}
+              textAnchor="middle"
+              fill="var(--ink-2)"
+              fontSize="11"
+              fontFamily="var(--font-mono)"
+              letterSpacing="0.05em"
+            >
+              {points[peakIdx].label}
+            </text>
           </g>
         )}
 
-        {/* Dots + temp labels + time labels every STEP hours */}
+        {/* Dots + temp labels + time labels every STEP hours (skip peak, already rendered) */}
         {points.map((p, i) => {
-          if (i % STEP !== 0) return null;
-          const isPeak = i === peakIdx;
+          if (i % STEP !== 0 || i === peakIdx) return null;
           return (
             <g key={i}>
-              {/* Dot */}
-              {!isPeak && (
-                <circle cx={p.x} cy={p.y} r="3" fill="var(--accent)" fillOpacity="0.7" />
-              )}
-              {/* Temperature label above */}
+              <circle cx={p.x} cy={p.y} r="3" fill="var(--accent)" fillOpacity="0.7" />
               <text
                 x={p.x}
                 y={p.y - 10}
@@ -110,7 +128,6 @@ export default function Chart() {
               >
                 {p.t}°
               </text>
-              {/* Time label below */}
               <text
                 x={p.x}
                 y={H - 6}

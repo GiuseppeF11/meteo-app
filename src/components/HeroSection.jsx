@@ -19,9 +19,11 @@ export default function HeroSection() {
 
   if (!weatherData) return null;
 
+  const tzOffset = weatherData?.tzoffset ?? 0;
+  const cityDate = new Date(now.getTime() + now.getTimezoneOffset() * 60000 + tzOffset * 3600000);
   const hourStr =
     selectedHour ||
-    now.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+    cityDate.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
 
   const data =
     weatherData.days[0]?.hours?.find((h) => h.datetime.includes(hourStr)) ||
