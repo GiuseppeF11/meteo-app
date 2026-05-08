@@ -16,13 +16,19 @@ import "./App.css";
 
 function AppContent() {
   const { weatherData, loading } = useCity();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const conditions = weatherData?.currentConditions?.conditions || "";
   const { key, condition, timeBucket } = usePalette(conditions);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-palette", key);
   }, [key]);
+
+  // Aggiorna lang sull'<html> in base alla lingua selezionata
+  // (previene che Safari/Chrome propongano la traduzione automatica)
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   if (loading) return <Loader />;
 
