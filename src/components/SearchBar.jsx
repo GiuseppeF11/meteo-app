@@ -19,10 +19,7 @@ async function reverseGeocode(lat, lon) {
 
 function debounce(fn, ms) {
   let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), ms);
-  };
+  return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), ms); };
 }
 
 async function fetchSuggestions(query) {
@@ -34,9 +31,7 @@ async function fetchSuggestions(query) {
     const data = await res.json();
     const ql = query.toLowerCase();
     return data
-      .filter((item) =>
-        ["city", "town", "village", "municipality"].includes(item.addresstype)
-      )
+      .filter((item) => ["city", "town", "village", "municipality"].includes(item.addresstype))
       .map((item) => {
         const city = item.address?.city || item.address?.town || item.address?.village || item.name;
         const country = item.address?.country || "";
@@ -52,7 +47,7 @@ async function fetchSuggestions(query) {
       })
       .filter((item, idx, arr) => arr.findIndex((x) => x.cityName === item.cityName) === idx)
       .slice(0, 5)
-      .map(({ cityName, country }) => ({ cityName, label: `${cityName}, ${country}` }));
+      .map(({ cityName, country }) => ({ cityName, country }));
   } catch {
     return [];
   }
@@ -62,16 +57,15 @@ export default function SearchBar() {
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState("");
   const [activeIdx, setActiveIdx] = useState(-1);
+  const [error, setError] = useState("");
   const [gpsLoading, setGpsLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const { setCity, error: apiError } = useCity();
   const { t } = useLang();
-  const containerRef = useRef(null);
   const inputRef = useRef(null);
+  const containerRef = useRef(null);
 
-  // Auto-focus quando si espande su mobile
   useEffect(() => {
     if (expanded && inputRef.current) {
       const timer = setTimeout(() => inputRef.current?.focus(), 150);
@@ -88,6 +82,11 @@ export default function SearchBar() {
     setActiveIdx(-1);
   }, []);
 
+  const selectCity = useCallback((cityName) => {
+    setCity(cityName);
+    handleClose();
+  }, [setCity, handleClose]);
+
   const handleGps = useCallback(async () => {
     if (!navigator.geolocation) { setError(t("gpsError")); return; }
     setGpsLoading(true);
@@ -96,23 +95,12 @@ export default function SearchBar() {
       async (pos) => {
         try {
           const city = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
-          if (city) {
-            setCity(city);
-            setInput("");
-            handleClose();
-          } else {
-            setError(t("gpsCityNotFound"));
-          }
-        } catch {
-          setError(t("gpsError"));
-        } finally {
-          setGpsLoading(false);
-        }
+          if (city) { setCity(city); handleClose(); }
+          else setError(t("gpsCityNotFound"));
+        } catch { setError(t("gpsError")); }
+        finally { setGpsLoading(false); }
       },
-      (err) => {
-        setGpsLoading(false);
-        setError(err.code === 1 ? t("gpsDenied") : t("gpsError"));
-      },
+      (err) => { setGpsLoading(false); setError(err.code === 1 ? t("gpsDenied") : t("gpsError")); },
       { timeout: 8000 }
     );
   }, [t, setCity, handleClose]);
@@ -137,126 +125,69 @@ export default function SearchBar() {
     else setError("");
   }, [apiError, t]);
 
-  // Chiude su click fuori (desktop)
   useEffect(() => {
     function onClickOutside(e) {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
         setOpen(false);
+        setExpanded(false);
       }
     }
     document.addEventListener("mousedown", onClickOutside);
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, []);
 
-  const selectCity = (cityName) => {
-    setCity(cityName);
-    setInput("");
-    setSuggestions([]);
-    setOpen(false);
-    setError("");
-    handleClose();
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (suggestions.length > 0 && activeIdx >= 0) selectCity(suggestions[activeIdx].cityName);
+    if (activeIdx >= 0 && suggestions[activeIdx]) selectCity(suggestions[activeIdx].cityName);
     else if (suggestions.length > 0) selectCity(suggestions[0].cityName);
-    else if (input.trim()) setError(t("searchSelectHint"));
+    else if (input.trim()) setCity(input.trim());
   };
 
   const handleKeyDown = (e) => {
-    if (!open || !suggestions.length) return;
     if (e.key === "ArrowDown") { e.preventDefault(); setActiveIdx((i) => (i < suggestions.length - 1 ? i + 1 : 0)); }
     else if (e.key === "ArrowUp") { e.preventDefault(); setActiveIdx((i) => (i > 0 ? i - 1 : suggestions.length - 1)); }
-    else if (e.key === "Escape") { setOpen(false); handleClose(); }
+    else if (e.key === "Escape") handleClose();
   };
-
-  // ─── Dropdown comune (direzione controllata via classe CSS) ───
-  const dropdown = open && suggestions.length > 0 && (
-    <ul role="listbox" className="search-dropdown" style={{
-      listStyle: "none", margin: 0, padding: "4px 0",
-      background: "var(--card)", border: "1px solid var(--card-stroke)",
-      backdropFilter: "blur(14px) saturate(140%)",
-      WebkitBackdropFilter: "blur(14px) saturate(140%)",
-      borderRadius: 12, zIndex: 300, boxShadow: "0 8px 24px rgba(0,0,0,.12)",
-    }}>
-      {suggestions.map((s, i) => (
-        <li key={i} role="option" aria-selected={i === activeIdx}
-          onMouseDown={() => selectCity(s.cityName)}
-          onMouseEnter={() => setActiveIdx(i)}
-          style={{
-            padding: "8px 14px", cursor: "pointer",
-            fontFamily: "var(--font-ui)", fontSize: 13,
-            color: i === activeIdx ? "var(--accent)" : "var(--ink)",
-            background: i === activeIdx ? "var(--accent-soft)" : "transparent",
-            transition: "background 0.15s",
-          }}>
-          <span style={{ fontWeight: 600, display: "block" }}>{s.cityName}</span>
-          <span style={{ fontSize: 10, color: "var(--ink-2)", fontFamily: "var(--font-mono)", letterSpacing: "0.04em" }}>
-            {s.label.split(", ").slice(1).join(", ")}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
 
   return (
     <div ref={containerRef} className="search-root">
 
-      {/* ── MOBILE: due bottoni FAB (nascosti su desktop) ── */}
+      {/* ── MOBILE FAB ── */}
       <div className={`search-fab-row${expanded ? " search-fab-row--hidden" : ""}`}>
-        <button
-          type="button"
-          className="glass-pill search-fab-btn"
-          onClick={() => setExpanded(true)}
-          aria-label={t("searchPlaceholder")}
-        >
+        <button type="button" className="glass-pill search-fab-btn"
+          onClick={() => setExpanded(true)} aria-label={t("searchPlaceholder")}>
           <SearchIcon size={20} color="var(--accent)" strokeWidth={1.8} />
         </button>
-        <button
-          type="button"
-          className="glass-pill search-fab-btn"
-          onClick={handleGps}
-          aria-label={t("gpsLocate")}
-          style={{
-            opacity: gpsLoading ? 0.5 : 1,
-            animation: gpsLoading ? "spin 1s linear infinite" : "none",
-          }}
-        >
+        <button type="button" className="glass-pill search-fab-btn"
+          onClick={handleGps} aria-label={t("gpsLocate")}
+          style={{ opacity: gpsLoading ? 0.5 : 1, animation: gpsLoading ? "spin 1s linear infinite" : "none" }}>
           <GpsIcon size={20} color="var(--accent)" strokeWidth={1.8} />
         </button>
       </div>
 
-      {/* ── FORM PANEL: sempre visibile su desktop, animato su mobile ── */}
+      {/* ── FORM PANEL ── */}
       <div className={`search-form-panel${expanded ? " search-form-panel--open" : ""}`}>
+        {expanded && <div className="search-backdrop" onClick={handleClose} />}
 
-        {/* Overlay backdrop per chiudere su mobile */}
-        {expanded && (
-          <div className="search-backdrop" onClick={handleClose} />
-        )}
-
+        {/* Wrapper con position:relative per il dropdown */}
         <div style={{ position: "relative" }}>
           <form onSubmit={handleSubmit} className="glass-pill search-bar">
             <SearchIcon size={18} color="var(--ink-2)" strokeWidth={1.8} />
-            {/* GPS dentro il form (desktop + mobile expanded) */}
-            <button
-              type="button"
-              onClick={handleGps}
+
+            <button type="button" className="search-inner-gps" onClick={handleGps}
               aria-label={t("gpsLocate")}
-              style={{
-                background: "transparent", border: "none", cursor: "pointer",
+              style={{ background: "transparent", border: "none", cursor: "pointer",
                 padding: 0, display: "flex", alignItems: "center", flexShrink: 0,
                 opacity: gpsLoading ? 0.4 : 1,
-                animation: gpsLoading ? "spin 1s linear infinite" : "none",
-              }}
-            >
+                animation: gpsLoading ? "spin 1s linear infinite" : "none" }}>
               <GpsIcon size={18} color="var(--accent)" strokeWidth={1.8} />
             </button>
+
             <input
               ref={inputRef}
               type="text"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => { setInput(e.target.value); setError(""); }}
               onKeyDown={handleKeyDown}
               onFocus={() => suggestions.length > 0 && setOpen(true)}
               placeholder={t("searchPlaceholder")}
@@ -265,43 +196,45 @@ export default function SearchBar() {
               aria-autocomplete="list"
               aria-expanded={open}
             />
+
             {input && (
               <button type="button"
                 onClick={() => { setInput(""); setSuggestions([]); setOpen(false); setError(""); }}
                 style={{ background: "transparent", border: "none", cursor: "pointer",
-                  color: "var(--ink-2)", padding: 0, lineHeight: 1, fontSize: 16 }}
-                aria-label={t("searchClear")}>
-                ×
-              </button>
+                  color: "var(--ink-2)", padding: 0, lineHeight: 1, fontSize: 18, flexShrink: 0 }}
+                aria-label={t("searchClear")}>×</button>
             )}
+
             <button type="submit" className="search-submit" aria-label={t("searchGo")}>
               {t("searchGo")}
             </button>
-            {/* Chiudi — solo mobile */}
-            <button
-              type="button"
-              className="search-close-mobile"
-              onClick={handleClose}
-              aria-label="Chiudi ricerca"
-            >
+
+            <button type="button" className="search-close-mobile" onClick={handleClose} aria-label="Chiudi">
               ×
             </button>
           </form>
 
           {error && (
             <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#e05050",
-              margin: "4px 16px 0", letterSpacing: "0.04em" }}>
-              {error}
-            </p>
+              margin: "4px 16px 0", letterSpacing: "0.04em" }}>{error}</p>
           )}
 
-          {/* Dropdown — sopra su mobile, sotto su desktop */}
-          <div className="search-dropdown-wrap">
-            {dropdown}
-          </div>
+          {/* Dropdown suggerimenti */}
+          {open && suggestions.length > 0 && (
+            <ul className="search-dropdown" role="listbox">
+              {suggestions.map((s, i) => (
+                <li key={i} role="option" aria-selected={i === activeIdx}
+                  className={`search-dropdown-item${i === activeIdx ? " search-dropdown-item--active" : ""}`}
+                  onMouseDown={() => selectCity(s.cityName)}
+                  onMouseEnter={() => setActiveIdx(i)}>
+                  <span className="search-dropdown-city">{s.cityName}</span>
+                  <span className="search-dropdown-country">{s.country}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
-
     </div>
   );
 }
