@@ -10,6 +10,7 @@ import HourlyStrip from "./components/HourlyStrip";
 import MetricsGrid from "./components/MetricsGrid";
 import SunArc from "./components/SunArc";
 import ForecastGrid from "./components/ForecastGrid";
+import LangToggle from "./components/LangToggle";
 import Loader from "./components/Loader";
 import "./App.css";
 
@@ -27,6 +28,7 @@ function AppContent() {
 
   return (
     <div className="app-root">
+      <LangToggle />
       <AtmosphericBackground condition={condition} timeOfDay={timeBucket} />
       <div className="app-layout">
         <SearchBar />

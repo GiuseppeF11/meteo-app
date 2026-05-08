@@ -51,7 +51,7 @@ export default function SearchBar() {
   const [error, setError] = useState("");
   const [activeIdx, setActiveIdx] = useState(-1);
   const { setCity, error: apiError } = useCity();
-  const { lang, setLang, t } = useLang();
+  const { t } = useLang();
   const containerRef = useRef(null);
 
   const debouncedFetch = useCallback(
@@ -102,7 +102,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div style={{ marginBottom: 28, display: "flex", alignItems: "flex-start", gap: 8 }}>
+    <div style={{ marginBottom: 28 }}>
       {/* Search form + dropdown scoped together */}
       <div ref={containerRef} style={{ position: "relative" }}>
         <form onSubmit={handleSubmit} className="glass-pill search-bar fade-up">
@@ -174,53 +174,6 @@ export default function SearchBar() {
         )}
       </div>
 
-      {/* Language toggle — sliding pill */}
-      <div
-        role="group"
-        aria-label="Switch language"
-        style={{
-          position: "relative", display: "flex", alignItems: "center",
-          flexShrink: 0, borderRadius: 20,
-          border: "1px solid var(--card-stroke)",
-          background: "var(--card)",
-          backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
-          padding: 3, gap: 0,
-        }}
-      >
-        {/* Sliding thumb */}
-        <span style={{
-          position: "absolute",
-          top: 3, left: 3,
-          width: "calc(50% - 3px)",
-          bottom: 3,
-          borderRadius: 14,
-          background: "var(--accent)",
-          opacity: 0.9,
-          transform: lang === "en" ? "translateX(100%)" : "translateX(0)",
-          transition: "transform 0.22s cubic-bezier(.4,0,.2,1)",
-          pointerEvents: "none",
-        }} />
-        {["it", "en"].map((l) => (
-          <button
-            key={l}
-            type="button"
-            onClick={() => setLang(l)}
-            style={{
-              position: "relative", zIndex: 1,
-              width: 32, height: 24,
-              border: "none", background: "transparent", cursor: "pointer",
-              fontFamily: "var(--font-mono)", fontSize: 10,
-              letterSpacing: "0.1em", textTransform: "uppercase",
-              color: lang === l ? "var(--bg-1)" : "var(--ink-2)",
-              fontWeight: lang === l ? 700 : 400,
-              transition: "color 0.22s",
-              borderRadius: 14,
-            }}
-          >
-            {l.toUpperCase()}
-          </button>
-        ))}
-      </div>
     </div>
   );
 }

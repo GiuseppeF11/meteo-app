@@ -1,83 +1,15 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { useLang } from "../contexts/LangContext";
 import { getWeatherIcon, Wind, Drop, UVIcon } from "./WeatherIcons";
 
-const W = 700;
-const H = 100;
-const PAD_X = 20;
-const PAD_TOP = 28;
-const PAD_BOT = 22;
-
-function catmullRomToBezier(points) {
-  if (points.length < 2) return "";
-  const d = [`M ${points[0].x} ${points[0].y}`];
-  for (let i = 0; i < points.length - 1; i++) {
-    const p0 = points[Math.max(i - 1, 0)];
-    const p1 = points[i];
-    const p2 = points[i + 1];
-    const p3 = points[Math.min(i + 2, points.length - 1)];
-    const cp1x = p1.x + (p2.x - p0.x) / 6;
-    const cp1y = p1.y + (p2.y - p0.y) / 6;
-    const cp2x = p2.x - (p3.x - p1.x) / 6;
-    const cp2y = p2.y - (p3.y - p1.y) / 6;
-    d.push(`C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${p2.x} ${p2.y}`);
-  }
-  return d.join(" ");
-}
-
-function MiniChart({ hours }) {
-  const points = useMemo(() => {
-    if (!hours?.length) return [];
-    const temps = hours.map((h) => Math.round(h.temp));
-    const minT = Math.min(...temps);
-    const maxT = Math.max(...temps);
-    const range = maxT - minT || 1;
-    const drawW = W - PAD_X * 2;
-    const drawH = H - PAD_TOP - PAD_BOT;
-    return hours.map((h, i) => ({
-      x: PAD_X + (i / (hours.length - 1)) * drawW,
-      y: PAD_TOP + drawH - ((Math.round(h.temp) - minT) / range) * drawH,
-      t: Math.round(h.temp),
-      label: h.datetime.slice(0, 5),
-    }));
-  }, [hours]);
-
-  if (!points.length) return null;
-  const curve = catmullRomToBezier(points);
-  const area = `${curve} L ${points[points.length - 1].x} ${H - PAD_BOT} L ${points[0].x} ${H - PAD_BOT} Z`;
-
-  return (
-    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", display: "block" }}>
-      <defs>
-        <linearGradient id="modal-fill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor="var(--accent)" stopOpacity="0.22" />
-          <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.00" />
-        </linearGradient>
-      </defs>
-      <path d={area} fill="url(#modal-fill)" />
-      <path d={curve} fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" />
-      {points.map((p, i) => i % 3 !== 0 ? null : (
-        <g key={i}>
-          <circle cx={p.x} cy={p.y} r="3" fill="var(--accent)" fillOpacity="0.8" />
-          <text x={p.x} y={p.y - 9} textAnchor="middle"
-            fill="var(--ink)" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">
-            {p.t}°
-          </text>
-          <text x={p.x} y={H - 4} textAnchor="middle"
-            fill="var(--ink-2)" fontSize="9" fontFamily="var(--font-mono)" letterSpacing="0.04em">
-            {p.label}
-          </text>
-        </g>
-      ))}
-    </svg>
-  );
-}
-
 function MetricChip({ label, value, unit, icon }) {
   return (
-    <div className="glass" style={{ padding: "12px 14px", display: "flex", flexDirection: "column", gap: 4 }}>
-      <span className="label-mono">{label}</span>
-      <span style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 600,
+    <div className="glass" style={{
+      padding: "10px 10px", display: "flex", flexDirection: "column", gap: 3,
+      minWidth: 0, overflow: "hidden",
+    }}>
+      <span className="label-mono" style={{ fontSize: 9, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{label}</span>
+      <span style={{ fontFamily: "var(--font-display)", fontSize: "clamp(15px, 4vw, 20px)", fontWeight: 600,
         color: "var(--ink)", letterSpacing: "-0.02em", lineHeight: 1 }}>
         {value}
         <span style={{ fontSize: "0.6em", color: "var(--ink-2)", marginLeft: 2 }}>{unit}</span>
@@ -172,16 +104,8 @@ export default function DayModal({ day, onClose }) {
           </div>
         </div>
 
-        {/* Mini chart */}
-        {day.hours?.length > 0 && (
-          <div className="glass" style={{ padding: "14px 10px", marginBottom: 20 }}>
-            <p className="label-mono" style={{ marginBottom: 8, paddingLeft: 10 }}>{t("modalTempTrend")}</p>
-            <MiniChart hours={day.hours} />
-          </div>
-        )}
-
         {/* Metrics */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 20 }}>
           <MetricChip label={t("metricWind")}       value={Math.round(day.windspeed ?? 0)} unit="km/h" icon={<Wind  size={18} color="var(--accent)" />} />
           <MetricChip label={t("metricHumidity")}   value={Math.round(day.humidity ?? 0)}  unit="%"    icon={<Drop  size={18} color="var(--accent)" />} />
           <MetricChip label={t("metricRain")}       value={day.precipprob ?? 0}             unit="%"    icon={<Drop  size={18} color="var(--accent)" />} />
