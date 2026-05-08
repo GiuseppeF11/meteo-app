@@ -9,7 +9,7 @@ export default function LangToggle() {
       role="group"
       aria-label="Switch language"
       style={{
-        position: "fixed", bottom: 24, right: 24, zIndex: 300,
+        position: "fixed", top: 20, right: 20, zIndex: 300,
         display: "flex", alignItems: "center",
         borderRadius: 20,
         border: "1px solid var(--card-stroke)",

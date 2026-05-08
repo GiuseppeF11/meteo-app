@@ -36,8 +36,13 @@ function AppContent() {
     <div className="app-root">
       <LangToggle />
       <AtmosphericBackground condition={condition} timeOfDay={timeBucket} />
-      <div className="app-layout">
+
+      {/* Search bar fissa in basso */}
+      <div className="search-bar-fixed">
         <SearchBar />
+      </div>
+
+      <div className="app-layout">
 
         {/* 1 — Hero + Dettagli (affiancati su desktop, solo hero su mobile) */}
         <div className="hero-with-details">

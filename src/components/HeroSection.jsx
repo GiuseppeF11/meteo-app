@@ -46,7 +46,7 @@ export default function HeroSection() {
 
   return (
     <div className="hero-left fade-up-1">
-      <p className="label-mono" style={{ marginBottom: 4 }}>
+      <p className="label-mono hero-datetime" style={{ marginBottom: 4 }}>
         {dateStr} &nbsp;·&nbsp;{hourStr}
       </p>
 

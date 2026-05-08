@@ -4,17 +4,6 @@ import { useLang } from "../contexts/LangContext";
 import { getWeatherIcon, Drop } from "./WeatherIcons";
 import DayModal from "./DayModal";
 
-function RangeBar({ min, max, absMin, absMax }) {
-  const range = absMax - absMin || 1;
-  const left  = ((min - absMin) / range) * 100;
-  const width = ((max - min)  / range) * 100;
-  return (
-    <div className="forecast-range-bar" style={{ width: "100%" }}>
-      <div className="forecast-range-fill" style={{ left: `${left}%`, width: `${width}%` }} />
-    </div>
-  );
-}
-
 export default function ForecastGrid() {
   const { weatherData } = useCity();
   const { t } = useLang();
@@ -23,10 +12,6 @@ export default function ForecastGrid() {
   if (!weatherData) return null;
 
   const days = weatherData.days.slice(0, 5);
-  const allMins = days.map((d) => Math.round(d.tempmin));
-  const allMaxs = days.map((d) => Math.round(d.tempmax));
-  const absMin = Math.min(...allMins);
-  const absMax = Math.max(...allMaxs);
 
   return (
     <>
@@ -52,16 +37,12 @@ export default function ForecastGrid() {
               <span className="forecast-day-label">{label}</span>
               {icon}
               <span className="forecast-temps">{max}° / {min}°</span>
-              <RangeBar min={min} max={max} absMin={absMin} absMax={absMax} />
-              {/* Precip hint */}
-              {day.precipprob > 20 && (
-                <span style={{ fontFamily: "var(--font-mono)", fontSize: 9,
-                  color: "var(--ink-2)", letterSpacing: "0.06em",
-                  display: "flex", alignItems: "center", gap: 3 }}>
-                  <Drop size={10} color="var(--accent)" strokeWidth={2} />
-                  {day.precipprob}%
-                </span>
-              )}
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 9,
+                color: "var(--ink-2)", letterSpacing: "0.06em",
+                display: "flex", alignItems: "center", gap: 3 }}>
+                <Drop size={10} color="var(--accent)" strokeWidth={2} />
+                {day.precipprob ?? 0}%
+              </span>
             </div>
           );
         })}
