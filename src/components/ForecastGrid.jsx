@@ -32,7 +32,9 @@ export default function ForecastGrid() {
     <>
       <div className="forecast-grid fade-up-5">
         {days.map((day, i) => {
-          const label = new Date(day.datetime).toLocaleDateString(t("dateLocale"), { weekday: "short" });
+          // Parsing manuale: evita che YYYY-MM-DD venga letto come UTC midnight (bug iOS Safari)
+          const [dy, dm, dd] = day.datetime.split("-").map(Number);
+          const label = new Date(dy, dm - 1, dd).toLocaleDateString(t("dateLocale"), { weekday: "short" });
           const min = Math.round(day.tempmin);
           const max = Math.round(day.tempmax);
           const icon = getWeatherIcon(day.conditions || "", true, {

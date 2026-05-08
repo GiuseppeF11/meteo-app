@@ -34,7 +34,8 @@ export default function DayModal({ day, onClose }) {
 
   if (!day) return null;
 
-  const dateLabel = new Date(day.datetime).toLocaleDateString(t("dateLocale"), {
+  const [dmy, dmm, dmd] = day.datetime.split("-").map(Number);
+  const dateLabel = new Date(dmy, dmm - 1, dmd).toLocaleDateString(t("dateLocale"), {
     weekday: "long", day: "2-digit", month: "long",
   });
 

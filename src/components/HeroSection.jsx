@@ -50,20 +50,24 @@ export default function HeroSection() {
         {dateStr} &nbsp;·&nbsp;{hourStr}
       </p>
 
-      <h1 className="hero-city">{city}</h1>
+      {/* Desktop only: city name above the icon+temp row */}
+      <h1 className="hero-city hero-city--desktop">{city}</h1>
 
-      <p className="hero-temp">{temp}°</p>
-
-      <div className="hero-icon">
-        {getWeatherIcon(conditions, isDay, {
-          size: 80,
-          color: "var(--accent)",
-          strokeWidth: 1.4,
-        })}
+      {/* Main row: mobile = icon+city+temp | desktop = icon+temp */}
+      <div className="hero-main-row">
+        <div className="hero-icon">
+          {getWeatherIcon(conditions, isDay, {
+            size: 80,
+            color: "var(--accent)",
+            strokeWidth: 1.4,
+          })}
+        </div>
+        {/* Mobile only: city inside the row */}
+        <h1 className="hero-city hero-city--mobile">{city}</h1>
+        <p className="hero-temp">{temp}°</p>
       </div>
 
       <p className="hero-condition">{conditions}</p>
-
       <div className="hero-minmax">
         <span>↓ {dayMin}°</span>
         <span>↑ {dayMax}°</span>

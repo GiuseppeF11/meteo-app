@@ -38,9 +38,7 @@ function Carousel() {
   };
 
   const formattedData = weatherData.days.slice(0, 7).map((day) => ({
-    day: new Date(day.datetime).toLocaleDateString("it-IT", {
-      weekday: "short",
-    }),
+    day: (() => { const [cy, cm, cd] = day.datetime.split("-").map(Number); return new Date(cy, cm - 1, cd).toLocaleDateString("it-IT", { weekday: "short" }); })(),
     icon: getWeatherIcon(day.conditions || "Clear"),
     min_t: `${Math.round(day.tempmin)}°C`,
     max_t: `${Math.round(day.tempmax)}°C`,

@@ -84,6 +84,17 @@
   margin-bottom: 28px;
 }
 
+@media (max-width: 768px) {
+  .search-bar-container {
+    width: 100% !important;
+  }
+  .search-bar {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
 .search-bar input {
   flex: 1;
   background: transparent;
@@ -113,20 +124,111 @@
   color: var(--accent);
 }
 
+.search-submit {
+  font-family: var(--font-mono) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: var(--ink-2) !important;
+  padding: 5px 10px !important;
+  border-radius: 10px !important;
+  border: 1px solid var(--card-stroke) !important;
+  background: var(--accent-soft) !important;
+  transition: background 0.2s, color 0.2s !important;
+  white-space: nowrap;
+}
+
+.search-submit:hover {
+  background: var(--accent) !important;
+  color: var(--bg-1) !important;
+}
+
 /* ─── Hero section ─── */
 .hero-section {
-  display: grid;
-  gap: 24px;
+  margin-bottom: 0;
+}
+
+/* ─── Hero + Dettagli wrapper ─── */
+.hero-with-details {
+  margin-bottom: 32px;
+}
+
+/* Desktop: 2 colonne, hero a sinistra, dettagli a destra */
+@media (min-width: 1024px) {
+  .hero-with-details {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 40px;
+    align-items: start;
+    margin-bottom: 40px;
+  }
+}
+
+/* Dettagli desktop: visibili solo ≥1024px */
+.metrics-section--desktop { display: none; }
+
+@media (min-width: 1024px) {
+  .metrics-section--desktop { display: block; }
+}
+
+/* Dettagli mobile: visibili solo <1024px */
+.metrics-section--mobile { display: block; }
+
+@media (min-width: 1024px) {
+  .metrics-section--mobile { display: none; }
+}
+
+/* ─── Hourly + Sun arc row ─── */
+.hourly-sunarc-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin-bottom: 32px;
 }
 
 @media (min-width: 1024px) {
-  .hero-section {
-    grid-template-columns: 1.15fr 0.85fr;
-    align-items: start;
-    gap: 40px;
+  .hourly-sunarc-row {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 24px;
     margin-bottom: 40px;
   }
+
+  /* Hourly prende tutto lo spazio disponibile */
+  .hourly-sunarc-row .chart-section {
+    flex: 1;
+    min-width: 0;
+    margin-bottom: 0;
+  }
+
+  /* Sun arc ha una larghezza fissa confortevole */
+  .hourly-sunarc-row .sun-arc-section {
+    flex: 0 0 300px;
+    margin-bottom: 0;
+  }
+
+  .hourly-sunarc-row .sun-arc-card {
+    height: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* ─── Sun arc section (standalone) ─── */
+.sun-arc-section {
+  margin-bottom: 0;
+}
+
+/* ─── Metrics section (base) ─── */
+.metrics-section {
+  margin-bottom: 32px;
+}
+
+.metrics-section .chart-section-title {
+  font-family: var(--font-ui);
+  font-size: clamp(14px, 2vw, 22px);
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 12px;
 }
 
 .hero-left {
@@ -173,16 +275,62 @@
   margin-top: 4px;
 }
 
-.hero-icon {
+/* ─── Hero main row ─── */
+.hero-main-row {
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin-top: 8px;
+  gap: 12px;
 }
 
+.hero-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ─── Mobile (<1024px): icon + city + temp on one row ─── */
+.hero-city--desktop { display: none; }
+.hero-city--mobile  { display: block; flex: 1; }
+
+@media (max-width: 1023px) {
+  .hero-main-row {
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .hero-city--mobile {
+    font-size: clamp(26px, 7.5vw, 38px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-icon svg {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .hero-temp {
+    font-size: clamp(36px, 10vw, 52px) !important;
+    line-height: 1 !important;
+    margin-left: auto;
+  }
+}
+
+/* ─── Desktop (≥1024px): city above, icon + temp side by side ─── */
 @media (min-width: 1024px) {
-  .hero-icon {
-    justify-content: flex-start;
+  .hero-city--desktop { display: block; }
+  .hero-city--mobile  { display: none; }
+
+  .hero-main-row {
+    align-items: center;
+    gap: 20px;
+    margin-top: 4px;
+  }
+
+  .hero-icon svg {
+    width: 180px !important;
+    height: 180px !important;
   }
 }
 
@@ -295,6 +443,119 @@
 /* Chart hidden on mobile */
 @media (max-width: 768px) {
   .chart-desktop-only { display: none; }
+}
+
+/* ─── Mobile spacing overrides ─── */
+@media (max-width: 768px) {
+  /* Layout */
+  .app-layout {
+    padding: 16px 14px 40px;
+  }
+
+  /* Glass cards — tighter border radius */
+  .glass {
+    border-radius: 14px;
+  }
+
+  /* Hero */
+  .hero-section {
+    margin-bottom: 12px;
+  }
+
+  .hourly-sunarc-row {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .metrics-section {
+    margin-bottom: 10px;
+  }
+
+  .metrics-section .chart-section-title {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .hero-icon svg {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .hero-condition {
+    font-size: 13px !important;
+    margin-top: 2px !important;
+  }
+
+  .hero-minmax {
+    font-size: 11px !important;
+    margin-top: 2px !important;
+  }
+
+  /* Metrics — 3 colonne su mobile per dimezzare l'altezza */
+  .hero-right {
+    gap: 8px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+
+  .metric-tile {
+    padding: 8px 8px;
+    gap: 2px;
+  }
+
+  .metric-value {
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .label-mono {
+    font-size: 9px;
+  }
+
+  /* Sections */
+  .chart-section {
+    margin-bottom: 10px;
+    padding: 12px;
+  }
+
+  .chart-section-title {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  /* Hourly cards */
+  .hourly-card {
+    padding: 8px 5px;
+    flex: 0 0 56px;
+    border-radius: 10px;
+  }
+
+  /* Sun arc — padding compatto, SVG libero di scalare in larghezza */
+  .sun-arc-card {
+    padding: 10px 12px !important;
+  }
+
+  /* Forecast */
+  .forecast-grid {
+    margin-top: 10px;
+    gap: 6px;
+  }
+
+  .forecast-card {
+    padding: 10px 6px;
+    gap: 5px;
+  }
+
+  .forecast-day-label {
+    font-size: 9px;
+  }
+
+  .forecast-temps {
+    font-size: 13px;
+  }
 }
 
 /* ─── Forecast grid ─── */

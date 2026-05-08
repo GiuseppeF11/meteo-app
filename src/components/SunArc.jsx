@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import { useCity } from "../contexts/CityContext";
 import { useLang } from "../contexts/LangContext";
-import { SunriseIcon, SunsetIcon } from "./WeatherIcons";
 
 function timeStrToMinutes(str) {
   if (!str) return 0;
@@ -103,20 +102,6 @@ export default function SunArc() {
           {fmt(sunset)}
         </text>
       </svg>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <SunriseIcon size={18} color="var(--accent)" strokeWidth={1.8} />
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--ink-2)" }}>
-            {fmt(sunrise)}
-          </span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <SunsetIcon size={18} color="var(--accent)" strokeWidth={1.8} />
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--ink-2)" }}>
-            {fmt(sunset)}
-          </span>
-        </div>
-      </div>
     </div>
   );
 }

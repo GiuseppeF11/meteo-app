@@ -32,24 +32,43 @@ function AppContent() {
       <AtmosphericBackground condition={condition} timeOfDay={timeBucket} />
       <div className="app-layout">
         <SearchBar />
-        <div className="hero-section">
-          <HeroSection />
-          <div className="hero-right fade-up-3">
+
+        {/* 1 — Hero + Dettagli (affiancati su desktop, solo hero su mobile) */}
+        <div className="hero-with-details">
+          <div className="hero-section">
+            <HeroSection />
+          </div>
+          {/* Dettagli — visibile solo su desktop, affiancato all'hero */}
+          <div className="metrics-section metrics-section--desktop fade-up-2">
+            <p className="chart-section-title">{t("detailsTitle")}</p>
             <MetricsGrid />
+          </div>
+        </div>
+
+        {/* 2+3 — Ora per ora + Alba & Tramonto (affiancati su desktop) */}
+        <div className="hourly-sunarc-row">
+          <div className="glass chart-section fade-up-2">
+            <p className="chart-section-title">{t("hourlyTitle")}</p>
+            <HourlyStrip />
+          </div>
+          <div className="sun-arc-section fade-up-3">
             <SunArc />
           </div>
         </div>
-        {/* Hourly conditions — always visible */}
-        <div className="glass chart-section fade-up-4">
-          <p className="chart-section-title">{t("hourlyTitle")}</p>
-          <HourlyStrip />
+
+        {/* 4 — Dettagli della giornata (visibile solo su mobile, dopo sun arc) */}
+        <div className="metrics-section metrics-section--mobile fade-up-4">
+          <p className="chart-section-title">{t("detailsTitle")}</p>
+          <MetricsGrid />
         </div>
 
-        {/* Temperature chart — desktop only */}
-        <div className="glass chart-section fade-up-4 chart-desktop-only">
+        {/* 5 — Grafico temperatura (solo desktop) */}
+        <div className="glass chart-section fade-up-5 chart-desktop-only">
           <p className="chart-section-title">{t("next24h")}</p>
           <Chart />
         </div>
+
+        {/* 6 — Previsioni 5 giorni */}
         <ForecastGrid />
       </div>
     </div>

@@ -1,7 +1,21 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useCity } from "../contexts/CityContext";
 import { useLang } from "../contexts/LangContext";
-import { SearchIcon } from "./WeatherIcons";
+import { SearchIcon, GpsIcon } from "./WeatherIcons";
+
+async function reverseGeocode(lat, lon) {
+  const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`;
+  const res = await fetch(url, { headers: { "Accept-Language": "it,en" } });
+  if (!res.ok) return null;
+  const data = await res.json();
+  return (
+    data.address?.city ||
+    data.address?.town ||
+    data.address?.village ||
+    data.address?.county ||
+    null
+  );
+}
 
 function debounce(fn, ms) {
   let timer;
@@ -50,9 +64,38 @@ export default function SearchBar() {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
   const [activeIdx, setActiveIdx] = useState(-1);
+  const [gpsLoading, setGpsLoading] = useState(false);
   const { setCity, error: apiError } = useCity();
   const { t } = useLang();
   const containerRef = useRef(null);
+
+  const handleGps = useCallback(async () => {
+    if (!navigator.geolocation) { setError(t("gpsError")); return; }
+    setGpsLoading(true);
+    setError("");
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const city = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
+          if (city) {
+            setCity(city);
+            setInput("");
+          } else {
+            setError(t("gpsCityNotFound"));
+          }
+        } catch {
+          setError(t("gpsError"));
+        } finally {
+          setGpsLoading(false);
+        }
+      },
+      (err) => {
+        setGpsLoading(false);
+        setError(err.code === 1 ? t("gpsDenied") : t("gpsError"));
+      },
+      { timeout: 8000 }
+    );
+  }, [t, setCity]);
 
   const debouncedFetch = useCallback(
     debounce(async (q) => {
@@ -104,9 +147,23 @@ export default function SearchBar() {
   return (
     <div style={{ marginBottom: 28 }}>
       {/* Search form + dropdown scoped together */}
-      <div ref={containerRef} style={{ position: "relative" }}>
+      <div ref={containerRef} className="search-bar-container" style={{ position: "relative", width: "fit-content" }}>
         <form onSubmit={handleSubmit} className="glass-pill search-bar fade-up">
           <SearchIcon size={18} color="var(--ink-2)" strokeWidth={1.8} />
+          <button
+            type="button"
+            onClick={handleGps}
+            aria-label={t("gpsLocate")}
+            title={t("gpsLocate")}
+            style={{
+              background: "transparent", border: "none", cursor: "pointer",
+              padding: 0, display: "flex", alignItems: "center", flexShrink: 0,
+              opacity: gpsLoading ? 0.4 : 1,
+              animation: gpsLoading ? "spin 1s linear infinite" : "none",
+            }}
+          >
+            <GpsIcon size={18} color="var(--accent)" strokeWidth={1.8} />
+          </button>
           <input
             type="text" value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -127,11 +184,8 @@ export default function SearchBar() {
               ×
             </button>
           )}
-          <button type="submit" aria-label={t("searchGo")}>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: 10,
-              letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-2)" }}>
-              {t("searchGo")}
-            </span>
+          <button type="submit" className="search-submit" aria-label={t("searchGo")}>
+            {t("searchGo")}
           </button>
         </form>
 
