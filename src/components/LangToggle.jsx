@@ -14,7 +14,7 @@ export default function LangToggle({ inline = false }) {
         background: "var(--card)",
         backdropFilter: "blur(14px) saturate(140%)",
         WebkitBackdropFilter: "blur(14px) saturate(140%)",
-        boxShadow: "0 4px 16px rgba(0,0,0,.12)",
+        boxShadow: "0 4px 20px rgba(0,0,0,.22), 0 1px 4px rgba(0,0,0,.14)",
         padding: 3,
         height: 48,
         boxSizing: "border-box",
