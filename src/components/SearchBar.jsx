@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useCity } from "../contexts/CityContext";
 import { useLang } from "../contexts/LangContext";
 import { SearchIcon, GpsIcon } from "./WeatherIcons";
+import LangToggle from "./LangToggle";
 
 async function reverseGeocode(lat, lon) {
   const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`;
@@ -154,6 +155,7 @@ export default function SearchBar() {
 
       {/* ── MOBILE FAB ── */}
       <div className={`search-fab-row${expanded ? " search-fab-row--hidden" : ""}`}>
+        <LangToggle inline />
         <button type="button" className="glass-pill search-fab-btn"
           onClick={() => setExpanded(true)} aria-label={t("searchPlaceholder")}>
           <SearchIcon size={20} color="var(--accent)" strokeWidth={1.8} />

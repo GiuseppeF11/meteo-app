@@ -57,7 +57,7 @@
   }
 
   .app-layout {
-    padding-top: 56px;
+    padding-top: 24px;
     padding-bottom: 88px;
   }
 }
@@ -173,15 +173,27 @@
   }
 }
 
+/* ─── Lang toggle ─── */
+
+/* Su mobile il toggle fisso in alto è nascosto (sta nei FAB) */
+@media (max-width: 1023px) {
+  .lang-toggle-desktop {
+    display: none !important;
+  }
+}
+
+/* Su desktop il toggle inline nel FAB row è nascosto (il FAB row è già display:none) */
+/* — non serve regola aggiuntiva, .search-fab-row { display:none } su desktop copre tutto */
+
 /* ─── hero datetime — più grande del label-mono normale ─── */
 .hero-datetime {
   font-size: 16px !important;
   letter-spacing: 0.06em;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
   .hero-datetime {
-    font-size: 14px !important;
+    font-size: 15px !important;
   }
 }
 
@@ -459,6 +471,12 @@
 .hero-city--mobile  { display: block; flex: 1; }
 
 @media (max-width: 1023px) {
+  /* Riordina hero: prima la riga icona+città+temp, poi data/ora */
+  .hero-main-row   { order: 1; }
+  .hero-datetime   { order: 2; }
+  .hero-condition  { order: 3; }
+  .hero-minmax     { order: 4; }
+
   .hero-main-row {
     align-items: center;
     gap: 10px;
@@ -466,18 +484,18 @@
   }
 
   .hero-city--mobile {
-    font-size: clamp(26px, 7.5vw, 38px);
+    font-size: clamp(30px, 8.5vw, 44px);
     line-height: 1;
     letter-spacing: -0.03em;
   }
 
   .hero-icon svg {
-    width: 36px !important;
-    height: 36px !important;
+    width: 40px !important;
+    height: 40px !important;
   }
 
   .hero-temp {
-    font-size: clamp(36px, 10vw, 52px) !important;
+    font-size: clamp(44px, 12vw, 60px) !important;
     line-height: 1 !important;
     margin-left: auto;
   }

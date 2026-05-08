@@ -1,14 +1,25 @@
 import React from "react";
 import { useLang } from "../contexts/LangContext";
 
-export default function LangToggle() {
+export default function LangToggle({ inline = false }) {
   const { lang, setLang } = useLang();
 
-  return (
-    <div
-      role="group"
-      aria-label="Switch language"
-      style={{
+  const pillStyle = inline
+    ? {
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        borderRadius: 20,
+        border: "1px solid var(--card-stroke)",
+        background: "var(--card)",
+        backdropFilter: "blur(14px) saturate(140%)",
+        WebkitBackdropFilter: "blur(14px) saturate(140%)",
+        boxShadow: "0 4px 16px rgba(0,0,0,.12)",
+        padding: 3,
+        height: 48,
+        boxSizing: "border-box",
+      }
+    : {
         position: "fixed", top: 20, right: 20, zIndex: 300,
         display: "flex", alignItems: "center",
         borderRadius: 20,
@@ -18,7 +29,14 @@ export default function LangToggle() {
         WebkitBackdropFilter: "blur(14px) saturate(140%)",
         boxShadow: "0 4px 20px rgba(0,0,0,.15)",
         padding: 3,
-      }}
+      };
+
+  return (
+    <div
+      role="group"
+      aria-label="Switch language"
+      className={inline ? "lang-toggle-inline" : "lang-toggle-desktop"}
+      style={pillStyle}
     >
       {/* Sliding thumb */}
       <span style={{
