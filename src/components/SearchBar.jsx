@@ -199,21 +199,22 @@ export default function SearchBar() {
               aria-expanded={open}
             />
 
-            {input && (
-              <button type="button"
-                onClick={() => { setInput(""); setSuggestions([]); setOpen(false); setError(""); }}
-                style={{ background: "transparent", border: "none", cursor: "pointer",
-                  color: "var(--ink-2)", padding: 0, lineHeight: 1, fontSize: 18, flexShrink: 0 }}
-                aria-label={t("searchClear")}>×</button>
-            )}
-
             <button type="submit" className="search-submit" aria-label={t("searchGo")}>
               {t("searchGo")}
             </button>
 
-            <button type="button" className="search-close-mobile" onClick={handleClose} aria-label="Chiudi">
-              ×
-            </button>
+            {/* Un solo ×: su desktop appare solo se c'è testo (clear).
+                Su mobile è sempre visibile: cancella il testo se presente, chiude il form se vuoto. */}
+            <button
+              type="button"
+              className="search-close-mobile"
+              onClick={() => {
+                if (input) { setInput(""); setSuggestions([]); setOpen(false); setError(""); }
+                else handleClose();
+              }}
+              style={{ display: input ? "flex" : undefined }}
+              aria-label={input ? t("searchClear") : "Chiudi"}
+            >×</button>
           </form>
 
           {error && (

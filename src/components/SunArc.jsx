@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { useCity } from "../contexts/CityContext";
 import { useLang } from "../contexts/LangContext";
+import { getCityDate } from "../utils/weather";
 
 function timeStrToMinutes(str) {
   if (!str) return 0;
@@ -37,9 +38,7 @@ export default function SunArc() {
   const sunrise = day?.sunrise || "06:00:00";
   const sunset  = day?.sunset  || "20:00:00";
 
-  const now = new Date();
-  const tzOffset = weatherData?.tzoffset ?? 0;
-  const cityDate = new Date(now.getTime() + now.getTimezoneOffset() * 60000 + tzOffset * 3600000);
+  const cityDate = getCityDate(weatherData.tzoffset ?? 0);
   const nowMin = cityDate.getHours() * 60 + cityDate.getMinutes();
   const riseMin = timeStrToMinutes(sunrise);
   const setMin  = timeStrToMinutes(sunset);

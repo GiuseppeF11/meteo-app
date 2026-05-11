@@ -12,7 +12,7 @@ export const CityProvider = ({ children }) => {
   const [selectedHour, setSelectedHour] = useState(null);
   const { lang } = useLang();
 
-  const API_KEY = "4ZHN8M7GAK9M3PNAFDJFBSYY9";
+  const API_KEY = import.meta.env.VITE_VISUAL_CROSSING_KEY;
 
   const fetchWeatherData = async (city, language) => {
     setLoading(true);
@@ -35,7 +35,7 @@ export const CityProvider = ({ children }) => {
 
   useEffect(() => {
     if (city) fetchWeatherData(city, lang);
-  }, [city]); // lang escluso: il toggle lingua non rifà il fetch
+  }, [city, lang]); // lang incluso: le condizioni meteo arrivano tradotte dall'API
 
   const setHour = (hour) => setSelectedHour(hour);
 

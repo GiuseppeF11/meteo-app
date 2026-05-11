@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useCity } from "../contexts/CityContext";
 import { useLang } from "../contexts/LangContext";
 import { getWeatherIcon } from "./WeatherIcons";
+import { getCityDate, isDaytime, findHourlyData } from "../utils/weather";
 
 function useNow() {
   const [now, setNow] = useState(new Date());
@@ -19,15 +20,12 @@ export default function HeroSection() {
 
   if (!weatherData) return null;
 
-  const tzOffset = weatherData?.tzoffset ?? 0;
-  const cityDate = new Date(now.getTime() + now.getTimezoneOffset() * 60000 + tzOffset * 3600000);
+  const cityDate = getCityDate(weatherData.tzoffset ?? 0);
   const hourStr =
     selectedHour ||
     cityDate.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
 
-  const data =
-    weatherData.days[0]?.hours?.find((h) => h.datetime.includes(hourStr)) ||
-    weatherData.currentConditions;
+  const data = findHourlyData(weatherData, hourStr);
 
   const conditions = data?.conditions || "";
   const temp = Math.round(data?.temp ?? 0);
@@ -36,7 +34,7 @@ export default function HeroSection() {
   const dayMax = Math.round(weatherData.days[0]?.tempmax ?? 0);
 
   const hour = parseInt(hourStr.split(":")[0], 10);
-  const isDay = hour >= 6 && hour < 20;
+  const isDay = isDaytime(hour);
 
   const dateStr = now.toLocaleDateString(t("dateLocale"), {
     weekday: "long",

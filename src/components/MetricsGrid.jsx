@@ -2,6 +2,7 @@ import React from "react";
 import { useCity } from "../contexts/CityContext";
 import { useLang } from "../contexts/LangContext";
 import { Wind, Drop, UVIcon } from "./WeatherIcons";
+import { getCityDate, findHourlyData } from "../utils/weather";
 
 const METRICS = [
   { key: "windspeed",  labelKey: "metricWind",       unit: "km/h", icon: (s) => <Wind  size={s} color="var(--accent)" /> },
@@ -19,11 +20,9 @@ export default function MetricsGrid() {
 
   const hourToUse =
     selectedHour ||
-    new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+    getCityDate(weatherData.tzoffset ?? 0).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
 
-  const data =
-    weatherData.days[0]?.hours?.find((h) => h.datetime.includes(hourToUse)) ||
-    weatherData.currentConditions;
+  const data = findHourlyData(weatherData, hourToUse);
 
   return (
     <div className="metrics-grid fade-up-2">

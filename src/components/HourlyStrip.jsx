@@ -1,15 +1,14 @@
 import React from "react";
 import { useCity } from "../contexts/CityContext";
 import { getWeatherIcon, Drop } from "./WeatherIcons";
+import { getCityDate, isDaytime } from "../utils/weather";
 
 export default function HourlyStrip() {
   const { weatherData } = useCity();
   if (!weatherData) return null;
 
   // Ora corrente nella timezone della città
-  const tzOffset = weatherData?.tzoffset ?? 0;
-  const now = new Date();
-  const cityDate = new Date(now.getTime() + now.getTimezoneOffset() * 60000 + tzOffset * 3600000);
+  const cityDate = getCityDate(weatherData.tzoffset ?? 0);
   const currentHour = cityDate.getHours();
 
   const todayHours    = weatherData.days[0]?.hours ?? [];
@@ -26,7 +25,7 @@ export default function HourlyStrip() {
     <div className="hourly-strip">
       {hours.map((h, i) => {
         const hourNum = parseInt(h.datetime, 10);
-        const isDay = hourNum >= 6 && hourNum < 20;
+        const isDay = isDaytime(hourNum);
         const icon = getWeatherIcon(h.conditions || "", isDay, {
           size: 20, color: "var(--accent)", strokeWidth: 1.6,
         });

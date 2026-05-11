@@ -23,7 +23,6 @@ export const translations = {
     metricVisibility: "Visibilità",
     metricRain: "Pioggia",
 
-    modalTempTrend: "Andamento temperatura",
     modalHourly: "Ore per ora",
 
     langToggle: "EN",
@@ -53,7 +52,6 @@ export const translations = {
     metricVisibility: "Visibility",
     metricRain: "Rain",
 
-    modalTempTrend: "Temperature trend",
     modalHourly: "Hourly",
 
     langToggle: "IT",

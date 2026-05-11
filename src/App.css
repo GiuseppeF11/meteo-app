@@ -302,23 +302,24 @@
   color: var(--accent);
 }
 
-.search-submit {
-  font-family: var(--font-mono) !important;
-  font-size: 10px !important;
-  letter-spacing: 0.12em !important;
-  text-transform: uppercase !important;
-  color: var(--ink-2) !important;
-  padding: 5px 10px !important;
-  border-radius: 10px !important;
-  border: 1px solid var(--card-stroke) !important;
-  background: var(--accent-soft) !important;
-  transition: background 0.2s, color 0.2s !important;
+.search-bar .search-submit {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  padding: 5px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--card-stroke);
+  background: var(--accent-soft);
+  transition: background 0.2s, color 0.2s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.search-submit:hover {
-  background: var(--accent) !important;
-  color: var(--bg-1) !important;
+.search-bar .search-submit:hover {
+  background: var(--accent);
+  color: var(--bg-1);
 }
 
 /* ─── Hero section ─── */
@@ -490,13 +491,13 @@
   }
 
   .hero-icon svg {
-    width: 40px !important;
-    height: 40px !important;
+    width: 40px;
+    height: 40px;
   }
 
   .hero-temp {
-    font-size: clamp(44px, 12vw, 60px) !important;
-    line-height: 1 !important;
+    font-size: clamp(44px, 12vw, 60px);
+    line-height: 1;
     margin-left: auto;
   }
 }
@@ -513,8 +514,8 @@
   }
 
   .hero-icon svg {
-    width: 180px !important;
-    height: 180px !important;
+    width: 180px;
+    height: 180px;
   }
 }
 
@@ -624,21 +625,18 @@
   min-height: 12px;
 }
 
-/* Chart hidden on mobile */
+/* ─── Mobile overrides (max-width: 768px) ─── */
 @media (max-width: 768px) {
+  /* Grafico 24h nascosto su mobile */
   .chart-desktop-only { display: none; }
-}
 
-/* ─── Mobile spacing overrides ─── */
-@media (max-width: 768px) {
-  /* Layout — padding orizzontale mobile */
+  /* Layout */
   .app-layout {
     padding-left: 14px;
     padding-right: 14px;
-    /* padding-top e bottom gestiti dalla regola search-bar-fixed mobile */
   }
 
-  /* Glass cards — tighter border radius */
+  /* Glass cards — border radius più compatto */
   .glass {
     border-radius: 14px;
   }
@@ -648,6 +646,22 @@
     margin-bottom: 12px;
   }
 
+  .hero-icon svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .hero-condition {
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  .hero-minmax {
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  /* Layout spacing */
   .hourly-sunarc-row {
     gap: 8px;
     margin-bottom: 10px;
@@ -662,22 +676,7 @@
     margin-bottom: 8px;
   }
 
-  .hero-icon svg {
-    width: 36px !important;
-    height: 36px !important;
-  }
-
-  .hero-condition {
-    font-size: 13px !important;
-    margin-top: 2px !important;
-  }
-
-  .hero-minmax {
-    font-size: 11px !important;
-    margin-top: 2px !important;
-  }
-
-  /* Metrics — 3 colonne su mobile per dimezzare l'altezza */
+  /* Metrics — 3 colonne su mobile */
   .hero-right {
     gap: 8px;
   }
@@ -688,7 +687,7 @@
   }
 
   .metric-tile {
-    padding: 8px 8px;
+    padding: 8px;
     gap: 2px;
   }
 
@@ -719,9 +718,9 @@
     border-radius: 10px;
   }
 
-  /* Sun arc — padding compatto, SVG libero di scalare in larghezza */
+  /* Sun arc */
   .sun-arc-card {
-    padding: 10px 12px !important;
+    padding: 10px 12px;
   }
 
   /* Forecast */

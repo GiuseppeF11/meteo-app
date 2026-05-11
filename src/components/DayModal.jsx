@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLang } from "../contexts/LangContext";
 import { getWeatherIcon, Wind, Drop, UVIcon } from "./WeatherIcons";
+import { parseDateStr, isDaytime } from "../utils/weather";
 
 function MetricChip({ label, value, unit, icon }) {
   return (
@@ -34,8 +35,7 @@ export default function DayModal({ day, onClose }) {
 
   if (!day) return null;
 
-  const [dmy, dmm, dmd] = day.datetime.split("-").map(Number);
-  const dateLabel = new Date(dmy, dmm - 1, dmd).toLocaleDateString(t("dateLocale"), {
+  const dateLabel = parseDateStr(day.datetime).toLocaleDateString(t("dateLocale"), {
     weekday: "long", day: "2-digit", month: "long",
   });
 
@@ -127,7 +127,7 @@ export default function DayModal({ day, onClose }) {
               paddingBottom: 2,
             }}>
               {hourlySlots.map((h, i) => {
-                const hIcon = getWeatherIcon(h.conditions || "", parseInt(h.datetime) >= 6 && parseInt(h.datetime) < 20, {
+                const hIcon = getWeatherIcon(h.conditions || "", isDaytime(parseInt(h.datetime, 10)), {
                   size: 20, color: "var(--accent)", strokeWidth: 1.6,
                 });
                 return (
