@@ -828,6 +828,14 @@
   }
 }
 
+/* Desktop: larghezza uguale alla search bar, non all'intero wrapper */
+@media (min-width: 1024px) {
+  .search-dropdown {
+    right: auto;
+    width: 360px;
+  }
+}
+
 .search-dropdown-item {
   display: flex;
   flex-direction: column;
