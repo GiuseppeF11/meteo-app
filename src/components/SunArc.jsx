@@ -67,8 +67,8 @@ export default function SunArc() {
         <path d={arcPath} fill="none"
           stroke="var(--accent-soft)" strokeWidth="2" strokeLinecap="round" />
 
-        {/* Progress */}
-        {sun.progress > 0 && sun.progress < 1 && (
+        {/* Progress + sole (solo quando il sole è sopra l'orizzonte) */}
+        {sun.progress > 0 && sun.progress < 1 ? (
           <>
             <path
               d={`M ${cx - rx} ${baseY} Q ${sun.cp1x} ${sun.cp1y} ${sun.x} ${sun.y}`}
@@ -83,6 +83,13 @@ export default function SunArc() {
             <circle cx={sun.x} cy={sun.y} r="5"
               fill="var(--accent)" />
           </>
+        ) : (
+          /* Luna di notte: centrata sull'arco, sopra la linea dell'orizzonte */
+          <text
+            x={cx} y={baseY - 18}
+            textAnchor="middle" dominantBaseline="middle"
+            fontSize="22"
+          >🌙</text>
         )}
 
         {/* Horizon line */}

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useCity } from "./contexts/CityContext";
 import { useLang } from "./contexts/LangContext";
 import { usePalette } from "./hooks/usePalette";
+import { getCityDate } from "./utils/weather";
 import AtmosphericBackground from "./components/AtmosphericBackground";
 import SearchBar from "./components/SearchBar";
 import HeroSection from "./components/HeroSection";
@@ -19,7 +20,10 @@ function AppContent() {
   const { weatherData, loading } = useCity();
   const { t, lang } = useLang();
   const conditions = weatherData?.currentConditions?.conditions || "";
-  const { key, condition, timeBucket } = usePalette(conditions);
+  // Passiamo l'ora locale della città (non del browser) così background e
+  // palette riflettono il momento della città cercata, non quello dell'utente.
+  const cityDate = getCityDate(weatherData?.tzoffset ?? 0);
+  const { key, condition, timeBucket } = usePalette(conditions, cityDate);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-palette", key);
