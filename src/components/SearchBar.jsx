@@ -3,20 +3,7 @@ import { useCity } from "../contexts/CityContext";
 import { useLang } from "../contexts/LangContext";
 import { SearchIcon, GpsIcon } from "./WeatherIcons";
 import LangToggle from "./LangToggle";
-
-async function reverseGeocode(lat, lon) {
-  const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`;
-  const res = await fetch(url, { headers: { "Accept-Language": "it,en" } });
-  if (!res.ok) return null;
-  const data = await res.json();
-  return (
-    data.address?.city ||
-    data.address?.town ||
-    data.address?.village ||
-    data.address?.county ||
-    null
-  );
-}
+import { reverseGeocode } from "../utils/weather";
 
 function debounce(fn, ms) {
   let timer;
@@ -62,7 +49,7 @@ export default function SearchBar() {
   const [error, setError] = useState("");
   const [gpsLoading, setGpsLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const { setCity, error: apiError } = useCity();
+  const { setCity } = useCity();
   const { t } = useLang();
   const inputRef = useRef(null);
   const containerRef = useRef(null);
@@ -83,8 +70,11 @@ export default function SearchBar() {
     setActiveIdx(-1);
   }, []);
 
-  const selectCity = useCallback((cityName) => {
-    setCity(cityName);
+  // Disambigua la query verso Visual Crossing: senza il country, "Roma" può
+  // risolvere a Roma, Texas (tzoffset -5) invece di Roma, Italia.
+  const selectCity = useCallback((cityName, country) => {
+    const query = country ? `${cityName}, ${country}` : cityName;
+    setCity(query);
     handleClose();
   }, [setCity, handleClose]);
 
@@ -122,11 +112,6 @@ export default function SearchBar() {
   }, [input]);
 
   useEffect(() => {
-    if (apiError) setError(t("searchNotFound"));
-    else setError("");
-  }, [apiError, t]);
-
-  useEffect(() => {
     function onClickOutside(e) {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
         setOpen(false);
@@ -139,9 +124,15 @@ export default function SearchBar() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (activeIdx >= 0 && suggestions[activeIdx]) selectCity(suggestions[activeIdx].cityName);
-    else if (suggestions.length > 0) selectCity(suggestions[0].cityName);
-    else if (input.trim()) setCity(input.trim());
+    if (activeIdx >= 0 && suggestions[activeIdx]) {
+      const s = suggestions[activeIdx];
+      selectCity(s.cityName, s.country);
+    } else if (suggestions.length > 0) {
+      const s = suggestions[0];
+      selectCity(s.cityName, s.country);
+    } else if (input.trim()) {
+      setCity(input.trim());
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -228,7 +219,7 @@ export default function SearchBar() {
               {suggestions.map((s, i) => (
                 <li key={i} role="option" aria-selected={i === activeIdx}
                   className={`search-dropdown-item${i === activeIdx ? " search-dropdown-item--active" : ""}`}
-                  onMouseDown={() => selectCity(s.cityName)}
+                  onMouseDown={() => selectCity(s.cityName, s.country)}
                   onMouseEnter={() => setActiveIdx(i)}>
                   <span className="search-dropdown-city">{s.cityName}</span>
                   <span className="search-dropdown-country">{s.country}</span>

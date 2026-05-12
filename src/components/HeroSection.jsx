@@ -33,6 +33,12 @@ export default function HeroSection() {
   const dayMin = Math.round(weatherData.days[0]?.tempmin ?? 0);
   const dayMax = Math.round(weatherData.days[0]?.tempmax ?? 0);
 
+  // Usiamo weatherData.address (risposta API) invece dello state `city`:
+  // weatherData si aggiorna SOLO su fetch riuscito, quindi il nome rimane
+  // quello dell'ultima città valida anche se l'utente ha cercato qualcosa
+  // che non esiste. "Roma, Italia" → split → "Roma".
+  const cityDisplay = (weatherData.address ?? city).split(",")[0].trim();
+
   const hour = parseInt(hourStr.split(":")[0], 10);
   const isDay = isDaytime(hour);
 
@@ -49,7 +55,7 @@ export default function HeroSection() {
       </p>
 
       {/* Desktop only: city name above the icon+temp row */}
-      <h1 className="hero-city hero-city--desktop">{city}</h1>
+      <h1 className="hero-city hero-city--desktop">{cityDisplay}</h1>
 
       {/* Main row: mobile = icon+city+temp | desktop = icon+temp */}
       <div className="hero-main-row">
@@ -61,7 +67,7 @@ export default function HeroSection() {
           })}
         </div>
         {/* Mobile only: city inside the row */}
-        <h1 className="hero-city hero-city--mobile">{city}</h1>
+        <h1 className="hero-city hero-city--mobile">{cityDisplay}</h1>
         <p className="hero-temp">{temp}°</p>
       </div>
 

@@ -12,6 +12,7 @@ import SunArc from "./components/SunArc";
 import ForecastGrid from "./components/ForecastGrid";
 import LangToggle from "./components/LangToggle";
 import Loader from "./components/Loader";
+import Toast from "./components/Toast";
 import "./App.css";
 
 function AppContent() {
@@ -34,6 +35,7 @@ function AppContent() {
 
   return (
     <div className="app-root">
+      <Toast />
       <LangToggle />
       <AtmosphericBackground condition={condition} timeOfDay={timeBucket} />
 

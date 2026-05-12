@@ -10,6 +10,10 @@ export const translations = {
     gpsError: "Impossibile rilevare la posizione.",
     gpsCityNotFound: "Città non trovata per questa posizione.",
 
+    cityNotFound: "Città non trovata. Controlla il nome e riprova.",
+    networkError: "Errore di connessione. Controlla la rete.",
+    toastClose: "Chiudi",
+
     next24h: "Le prossime 24 ore",
     hourlyTitle: "Condizioni ora per ora",
     sunArcTitle: "Alba & Tramonto",
@@ -38,6 +42,10 @@ export const translations = {
     gpsDenied: "Location permission denied.",
     gpsError: "Unable to detect location.",
     gpsCityNotFound: "No city found for this location.",
+
+    cityNotFound: "City not found. Check the name and try again.",
+    networkError: "Connection error. Check your network.",
+    toastClose: "Close",
 
     next24h: "Next 24 hours",
     hourlyTitle: "Hourly conditions",
