@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useCity } from "./contexts/CityContext";
 import { useLang } from "./contexts/LangContext";
 import { usePalette } from "./hooks/usePalette";
-import { getCityDate } from "./utils/weather";
+import { getCityDate, findHourlyData } from "./utils/weather";
 import AtmosphericBackground from "./components/AtmosphericBackground";
 import SearchBar from "./components/SearchBar";
 import HeroSection from "./components/HeroSection";
@@ -19,10 +19,12 @@ import "./App.css";
 function AppContent() {
   const { weatherData, loading } = useCity();
   const { t, lang } = useLang();
-  const conditions = weatherData?.currentConditions?.conditions || "";
-  // Passiamo l'ora locale della città (non del browser) così background e
-  // palette riflettono il momento della città cercata, non quello dell'utente.
   const cityDate = getCityDate(weatherData?.tzoffset ?? 0);
+  const hourStr = cityDate.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+  // Stessa fonte dell'icona nella HeroSection: forecast dell'ora corrente
+  // invece di currentConditions (che può essere stantio o non allineato)
+  const currentHourData = weatherData ? findHourlyData(weatherData, hourStr) : null;
+  const conditions = currentHourData?.conditions || "";
   const { key, condition, timeBucket } = usePalette(conditions, cityDate);
 
   useEffect(() => {

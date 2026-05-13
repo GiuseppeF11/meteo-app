@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useCity } from "../contexts/CityContext";
 
 const W = 1200;

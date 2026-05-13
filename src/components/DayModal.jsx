@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useLang } from "../contexts/LangContext";
 import { getWeatherIcon, Wind, Drop, UVIcon } from "./WeatherIcons";
 import { parseDateStr, isDaytime } from "../utils/weather";

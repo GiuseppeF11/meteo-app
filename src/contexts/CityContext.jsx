@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, useRef } from "react";
+import { createContext, useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import { useLang } from "./LangContext";
 import { reverseGeocode } from "../utils/weather";

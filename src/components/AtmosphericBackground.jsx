@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 
 const RAIN_DROPS = Array.from({ length: 30 }, (_, i) => ({
   x: 5 + (i * 31) % 90,
